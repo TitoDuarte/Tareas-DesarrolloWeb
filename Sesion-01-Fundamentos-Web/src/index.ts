@@ -45,86 +45,85 @@ export type Headers = Record<string, string>;
 // ---------------------------------------------------------------------------
 
 /**
- * TODO: Analiza una URL y devuelve sus partes.
- *
- * Pista: usa el constructor `new URL(url)` (viene con Node, no requiere
- * ninguna librería). Sus propiedades te dan todo lo que necesitas:
- *
- *   const u = new URL("https://api.ejemplo.com/users?id=1");
- *   u.protocol // → "https:"
- *   u.host     // → "api.ejemplo.com"
- *   u.pathname // → "/users"
- *   u.search   // → "?id=1"
- *   u.searchParams.entries() // → iterador [["id","1"]]
- *
- * Si la URL no es válida, `new URL()` lanza TypeError — no hace falta
- * que lo manejes aparte, se propagará solo.
+ * Analiza una URL y extrae sus partes principales usando la API nativa URL.
+ * 
+ * @param url La URL completa a analizar.
+ * @returns Un objeto con el protocolo, host, pathname, search y los query params.
+ * @throws {TypeError} Si la URL no es válida.
  */
 export function parseUrl(url: string): UrlParts {
-  // TODO: tu implementación aquí
-  throw new Error("Not implemented");
+  const u = new URL(url);
+  return {
+    protocol: u.protocol,
+    host: u.host,
+    pathname: u.pathname,
+    search: u.search,
+    query: Array.from(u.searchParams.entries())
+  };
 }
 
 /**
- * TODO: Clasifica un código de estado HTTP en su categoría.
- *
- * Reglas:
- *   100–199 → "1xx Informativo"
- *   200–299 → "2xx Éxito"
- *   300–399 → "3xx Redirección"
- *   400–499 → "4xx Error del cliente"
- *   500–599 → "5xx Error del servidor"
- *   otro    → "Desconocido"
- *
- * Pista: un único `if / else if` con comparaciones de rangos basta.
+ * Clasifica un código de estado HTTP en su categoría correspondiente.
+ * 
+ * @param code El código numérico de estado HTTP.
+ * @returns La categoría en formato string legible.
  */
 export function classifyStatus(code: number): StatusCategory {
-  // TODO: tu implementación aquí
-  throw new Error("Not implemented");
+  if (code >= 100 && code < 200) return "1xx Informativo";
+  if (code >= 200 && code < 300) return "2xx Éxito";
+  if (code >= 300 && code < 400) return "3xx Redirección";
+  if (code >= 400 && code < 500) return "4xx Error del cliente";
+  if (code >= 500 && code < 600) return "5xx Error del servidor";
+  return "Desconocido";
 }
 
 /**
- * TODO: Parsea un texto con líneas de cabeceras HTTP al formato
- * `Record<string, string>`. El separador entre nombre y valor es ":".
- *
- * Reglas:
- *   - Cada línea no vacía debe tener formato "Nombre: valor".
- *   - Ignora líneas vacías o que no contengan ":".
- *   - No tienes que normalizar mayúsculas/minúsculas del nombre.
- *
- * Ejemplo:
- *   parseHeaders("Content-Type: application/json\nAuthorization: Bearer abc")
- *   → { "Content-Type": "application/json", "Authorization": "Bearer abc" }
- *
- * Pista: `text.split("\n")` te da las líneas; `String.split(":")` te separa
- * nombre y valor. Recuerda `.trim()` para quitar espacios sobrantes.
+ * Parsea un texto con líneas de cabeceras HTTP al formato de diccionario.
+ * Ignora las líneas vacías o aquellas que no contienen el separador ":".
+ * 
+ * @param text Un bloque de texto con múltiples cabeceras.
+ * @returns Un objeto Record donde cada llave es el nombre de la cabecera y el valor es su contenido.
  */
 export function parseHeaders(text: string): Headers {
-  // TODO: tu implementación aquí
-  throw new Error("Not implemented");
+  const headers: Headers = {};
+  const lines = text.split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const colonIndex = trimmed.indexOf(":");
+    if (colonIndex === -1) continue;
+    const name = trimmed.slice(0, colonIndex).trim();
+    const value = trimmed.slice(colonIndex + 1).trim();
+    headers[name] = value;
+  }
+  return headers;
 }
 
 /**
- * TODO: Combina las funciones anteriores en un resumen legible.
- *
- * El formato exacto lo decides tú (los tests solo verifican que el string
- * no esté vacío y que contenga la URL y el código). Un ejemplo:
- *
- *   Resumen de la petición
- *   ──────────────────────
- *   URL:     https://api.ejemplo.com/users
- *   Status:  200 (2xx Éxito)
- *   Headers:
- *     • Content-Type: application/json
- *     • Authorization: Bearer abc
+ * Combina la información de la URL, el código de estado y las cabeceras
+ * para generar un resumen legible de la petición.
+ * 
+ * @param url La URL de destino.
+ * @param status El código de estado HTTP (ej. 200).
+ * @param headersText Texto plano con las cabeceras.
+ * @returns Un string formateado con el resumen completo de la solicitud.
  */
 export function summarizeRequest(
   url: string,
   status: number,
   headersText: string,
 ): string {
-  // TODO: tu implementación aquí
-  throw new Error("Not implemented");
+  const category = classifyStatus(status);
+  const headers = parseHeaders(headersText);
+  let summary = `Resumen de la petición\n`;
+  summary += `──────────────────────\n`;
+  summary += `URL:     ${url}\n`;
+  summary += `Status:  ${status} (${category})\n`;
+  summary += `Headers:\n`;
+  for (const [name, value] of Object.entries(headers)) {
+    summary += `  • ${name}: ${value}\n`;
+  }
+  return summary;
 }
 
 // ---------------------------------------------------------------------------
