@@ -34,8 +34,12 @@ export function generarId() {
  *   La tarea creada, o null si el texto es vacío.
  */
 export function agregarTarea(texto) {
-    // TODO: validar que `texto` no esté vacío (trim), crear el objeto
-    // { id, texto, completada: false }, hacer push al array `tareas`
+    const trimmed = texto.trim();
+    if (!trimmed) return null;
+    const tarea = { id: generarId(), texto: trimmed, completada: false };
+    tareas.push(tarea);
+    return tarea;
+}, hacer push al array `tareas`
     // y devolverlo. Si el texto es vacío, devolver null.
 }
 
@@ -45,8 +49,12 @@ export function agregarTarea(texto) {
  * @returns {boolean}
  */
 export function eliminarTarea(id) {
-    // TODO: filtrar `tareas` para quitar la que tenga ese id.
-    // Devuelve true si eliminó al menos una, false si no.
+    const index = tareas.findIndex(t => t.id === id);
+    if (index !== -1) {
+        tareas.splice(index, 1);
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -55,8 +63,12 @@ export function eliminarTarea(id) {
  * @returns {boolean}
  */
 export function toggleTarea(id) {
-    // TODO: recorrer `tareas` y cambiar `completada` de la que coincida.
-    // Devuelve true si la encontró.
+    const tarea = tareas.find(t => t.id === id);
+    if (tarea) {
+        tarea.completada = !tarea.completada;
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -65,24 +77,32 @@ export function toggleTarea(id) {
  * @returns {Array}
  */
 export function filtrarTareas(filtro) {
-    // TODO: implementar la lógica de filtrado.
+    if (filtro === "completadas") return tareas.filter(t => t.completada);
+    if (filtro === "pendientes") return tareas.filter(t => !t.completada);
+    return [...tareas];
 }
 
 /**
  * Persiste el array `tareas` en localStorage como JSON.
  */
 export function guardar() {
-    // TODO: usar localStorage.setItem con la clave STORAGE_KEY.
-    // El valor debe ser JSON.stringify(tareas).
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tareas));
 }
 
 /**
  * Carga las tareas desde localStorage. Si no hay nada, deja el array vacío.
  */
 export function cargar() {
-    // TODO: leer localStorage con STORAGE_KEY.
-    // Si existe, hacer JSON.parse y asignarlo a `tareas`.
-    // Si no existe o falla, `tareas` se queda como [].
+    try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        if (data) {
+            tareas = JSON.parse(data);
+        } else {
+            tareas = [];
+        }
+    } catch (e) {
+        tareas = [];
+    }
 }
 
 // =====================================================
@@ -179,3 +199,9 @@ function init() {
 if (typeof document !== "undefined" && document.getElementById("lista-tareas")) {
     document.addEventListener("DOMContentLoaded", init);
 }
+
+
+
+
+
+
