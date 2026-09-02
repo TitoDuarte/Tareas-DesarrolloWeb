@@ -14,7 +14,7 @@ let mod;
 let tmpDir;
 
 before(async () => {
-    mod = await import(resolve(root, 'src/app.js'));
+    mod = await import('../src/app.js');
     tmpDir = mkdtempSync(join(tmpdir(), 'dw-s5-'));
 });
 
