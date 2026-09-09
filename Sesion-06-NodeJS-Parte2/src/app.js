@@ -60,53 +60,86 @@ export function generarId() {
  * para verificar que los re-exports funcionan.
  */
 
-/**
- * Filtra las líneas de un archivo de log que contienen un texto y
- * escribe el resultado en otro archivo, usando Streams + pipeline.
- *
- * IMPORTANTE: usa `import { createReadStream, createWriteStream } from 'node:fs'`
- * y `pipeline` de 'node:stream/promises' (ya importados arriba).
- *
- * @param {string} origen  - Ruta del archivo de entrada.
- * @param {string} destino - Ruta del archivo de salida.
- * @param {string} texto   - Texto que deben contener las líneas.
- * @returns {Promise<number>} cantidad de líneas que coincidieron (0 si no hay).
- */
 export async function filtrarLogs(origen, destino, texto) {
-    throw new Error('Not implemented: filtrarLogs');
+    let matches = 0;
+    const { Transform } = await import('node:stream');
+    
+    const filterTransform = new Transform({
+        transform(chunk, encoding, callback) {
+            const data = chunk.toString();
+            if (this._buffer === undefined) this._buffer = '';
+            this._buffer += data;
+            
+            const lines = this._buffer.split('\n');
+            this._buffer = lines.pop(); // keep last incomplete line
+            
+            for (const line of lines) {
+                if (line.includes(texto)) {
+                    matches++;
+                    this.push(line + '\n');
+                }
+            }
+            callback();
+        },
+        flush(callback) {
+            if (this._buffer && this._buffer.includes(texto)) {
+                matches++;
+                this.push(this._buffer + '\n');
+            }
+            callback();
+        }
+    });
+
+    await pipeline(
+        createReadStream(origen, { encoding: 'utf-8' }),
+        filterTransform,
+        createWriteStream(destino, { encoding: 'utf-8' })
+    );
+
+    return matches;
 }
 
-/**
- * Lee un archivo de texto y devuelve las líneas como arreglo,
- * sin líneas vacías. NO uses readFile: debes usar un Readable + recolección
- * (puedes leer con `createReadStream` y acumular por chunks).
- *
- * @param {string} ruta
- * @returns {Promise<string[]>}
- */
 export async function leerLineas(ruta) {
-    throw new Error('Not implemented: leerLineas');
+    return new Promise((resolve, reject) => {
+        const lines = [];
+        let buffer = '';
+        const stream = createReadStream(ruta, { encoding: 'utf-8' });
+        
+        stream.on('data', (chunk) => {
+            buffer += chunk;
+            const parts = buffer.split(/\r?\n/);
+            buffer = parts.pop();
+            for (const p of parts) {
+                if (p.trim() !== '') lines.push(p);
+            }
+        });
+        
+        stream.on('end', () => {
+            if (buffer.trim() !== '') lines.push(buffer);
+            resolve(lines);
+        });
+        
+        stream.on('error', reject);
+    });
 }
 
-/**
- * Devuelve una ruta absoluta a partir de una ruta relativa al proyecto.
- * Usa el __dirname que definimos arriba + join.
- *
- * @param {string} rutaRelativa
- * @returns {string}
- */
 export function rutaAbsoluta(rutaRelativa) {
-    throw new Error('Not implemented: rutaAbsoluta');
+    return join(__dirname, rutaRelativa);
 }
 
-/**
- * Parsea el contenido de un archivo de configuración ".env" (simple).
- * Formato por línea: CLAVE=VALOR  (ignora líneas vacías y las que empiezan con #).
- * Devuelve un objeto con las claves en mayúsculas.
- *
- * @param {string} contenido
- * @returns {Record<string, string>}
- */
 export function parsearEnv(contenido) {
-    throw new Error('Not implemented: parsearEnv');
+    const result = {};
+    const lines = contenido.split(/\r?\n/);
+    for (const line of lines) {
+        const t = line.trim();
+        if (t && !t.startsWith('#')) {
+            const parts = t.split('=');
+            if (parts.length >= 2) {
+                const key = parts[0].trim().toUpperCase();
+                const value = parts.slice(1).join('=').trim();
+                result[key] = value;
+            }
+        }
+    }
+    return result;
 }

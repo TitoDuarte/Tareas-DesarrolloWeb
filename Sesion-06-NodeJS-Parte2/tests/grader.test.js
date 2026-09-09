@@ -15,9 +15,9 @@ let tmpDir;
 
 before(async () => {
     tmpDir = mkdtempSync(join(tmpdir(), 'dw-s6-'));
-    app = await import(resolve(root, 'src/app.js'));
+    app = await import('../src/app.js');
     // El barrel debe exportar lo mismo que app.js
-    index = await import(resolve(root, 'src/index.js'));
+    index = await import('../src/index.js');
 });
 
 // ===========================================================
