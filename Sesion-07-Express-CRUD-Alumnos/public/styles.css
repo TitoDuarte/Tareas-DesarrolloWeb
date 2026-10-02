@@ -1,0 +1,102 @@
+/* ============================================================
+   styles.css
+   Tarea Sesión 7 · Desarrollo Web · UMG
+   ============================================================ */
+
+:root {
+    --color-primario: #4a148c;
+    --color-fondo: #f5f5f7;
+    --color-texto: #1f2937;
+    --color-error: #c62828;
+    --color-ok: #2e7d32;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: var(--color-fondo);
+    color: var(--color-texto);
+}
+
+header {
+    background: var(--color-primario);
+    color: white;
+    padding: 16px 24px;
+}
+
+header h1 { margin: 0 0 4px 0; }
+header p { margin: 0; opacity: 0.85; font-size: 14px; }
+
+main { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+th { background: #ede7f6; }
+tbody tr:hover { background: #f9fafb; }
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 14px;
+}
+
+#btnNuevo { background: var(--color-primario); color: white; }
+
+dialog {
+    border: none;
+    border-radius: 10px;
+    padding: 20px 24px;
+    min-width: 340px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+
+dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
+
+label { display: block; margin-top: 10px; font-size: 14px; font-weight: 600; }
+input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 6px; }
+
+.acciones { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+#mensaje { min-height: 20px; font-size: 14px; }
+#mensaje.error { color: var(--color-error); }
+#mensaje.ok { color: var(--color-ok); }
+
+/* ---------- Mejoras de diseño ---------- */
+header { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+
+table { box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+tbody tr:nth-child(even) { background: #faf8ff; }
+tbody tr:hover { background: #f3ecff; }
+
+button { transition: filter 0.15s, transform 0.05s; }
+button:hover { filter: brightness(1.1); }
+button:active { transform: translateY(1px); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--color-primario); outline-offset: 2px; }
+
+.acciones-fila { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn-editar { background: #ede7f6; color: var(--color-primario); }
+.btn-eliminar, #btnConfirmarEliminar { background: var(--color-error); color: white; }
+#btnGuardar { background: var(--color-primario); color: white; }
+#btnCancelar, #btnCancelarEliminar { background: #e5e7eb; color: var(--color-texto); }
+
+#mensaje.error, #mensaje.ok { padding: 8px 12px; border-radius: 6px; font-weight: 600; }
+#mensaje.error { background: #fdecea; }
+#mensaje.ok { background: #e8f5e9; }
+
+@media (max-width: 640px) {
+    th:first-child, td:first-child { display: none; }
+    th, td { padding: 8px; font-size: 13px; }
+    dialog { min-width: 0; width: calc(100% - 32px); }
+}
