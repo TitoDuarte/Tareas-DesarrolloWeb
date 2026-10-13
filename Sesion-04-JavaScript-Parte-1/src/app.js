@@ -34,13 +34,11 @@ export function generarId() {
  *   La tarea creada, o null si el texto es vacío.
  */
 export function agregarTarea(texto) {
-    const trimmed = texto.trim();
+    const trimmed = typeof texto === "string" ? texto.trim() : "";
     if (!trimmed) return null;
     const tarea = { id: generarId(), texto: trimmed, completada: false };
     tareas.push(tarea);
     return tarea;
-}, hacer push al array `tareas`
-    // y devolverlo. Si el texto es vacío, devolver null.
 }
 
 /**
@@ -199,9 +197,3 @@ function init() {
 if (typeof document !== "undefined" && document.getElementById("lista-tareas")) {
     document.addEventListener("DOMContentLoaded", init);
 }
-
-
-
-
-
-

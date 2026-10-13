@@ -1,49 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Inicio - Recetas Chapinas</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Recetario de comida tradicional guatemalteca">
+  <title>Inicio - Recetas Chapinas</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Recetas Chapinas</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="recetas.html">Recetas</a></li>
-                <li><a href="acerca.html">Acerca de</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section>
-            <h2>Bienvenido a nuestro recetario</h2>
-            <article>
-                <h3>La gastronomía guatemalteca</h3>
-                <p>Descubre los mejores platillos de Guatemala.</p>
-                
-                <button commandfor="dialog-id" command="show-modal">Abrir Dialogo</button>
-                <dialog id="dialog-id">
-                    <p>Este es un dialog nativo.</p>
-                    <button commandfor="dialog-id" command="close">Cerrar</button>
-                </dialog>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <header>
+    <h1>Recetas Chapinas</h1>
+    <nav aria-label="Navegación principal">
+      <ul>
+        <li><a href="index.html" aria-current="page">Inicio</a></li>
+        <li><a href="recetas.html">Recetas</a></li>
+        <li><a href="acerca.html">Acerca de</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+        <li><a href="https://es.wikipedia.org/wiki/Gastronom%C3%ADa_de_Guatemala" target="_blank" rel="noopener noreferrer">Gastronomía (Wikipedia)</a></li>
+      </ul>
+    </nav>
+  </header>
 
-                <button popovertarget="my-popover">Mostrar Popover</button>
-                <div id="my-popover" popover>
-                    Contenido del popover nativo.
-                </div>
+  <main id="contenido">
+    <section>
+      <h2>Bienvenido a nuestro recetario</h2>
+      <article>
+        <h3>La gastronomía guatemalteca</h3>
+        <p>Descubre los mejores platillos de Guatemala, una mezcla de tradición maya y herencia española.</p>
+        <img src="img/pepian.svg" alt="Ilustración de un plato de pepián" width="400" height="260" loading="lazy">
+        <p>Platos destacados:</p>
+        <ul>
+          <li>Pepián</li>
+          <li>Jocón</li>
+          <li>Kak'ik</li>
+        </ul>
+      </article>
 
-                <form action="#" method="post">
-                    <label for="name">Nombre:</label>
-                    <input type="text" id="name" name="name" required>
-                    <button type="submit">Enviar</button>
-                </form>
-            </article>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 Recetas Chapinas</p>
-    </footer>
+      <article>
+        <h3>Elementos interactivos</h3>
+        <button type="button" commandfor="dialogo-info" command="show-modal">Abrir diálogo</button>
+        <dialog id="dialogo-info" aria-labelledby="dialogo-titulo">
+          <h4 id="dialogo-titulo">Dato curioso</h4>
+          <p>El pepián es considerado uno de los platos nacionales de Guatemala.</p>
+          <button type="button" commandfor="dialogo-info" command="close">Cerrar</button>
+        </dialog>
+
+        <button type="button" popovertarget="popover-consejo">Mostrar consejo</button>
+        <div id="popover-consejo" popover>
+          <p>Tuesta las especias antes de molerlas para un sabor más intenso.</p>
+        </div>
+      </article>
+
+      <article>
+        <h3>Suscríbete al recetario</h3>
+        <form action="#" method="post">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required minlength="2" autocomplete="name">
+          <label for="correo">Correo electrónico:</label>
+          <input type="email" id="correo" name="correo" required autocomplete="email">
+          <button type="submit">Suscribirme</button>
+        </form>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Recetas Chapinas &middot; Universidad Mariano Gálvez</p>
+  </footer>
 </body>
 </html>
